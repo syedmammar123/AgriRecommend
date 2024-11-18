@@ -3,8 +3,8 @@ import pickle
 import numpy as np
 
 # Load the trained model
-rfc  = pickle.load(open('model.pkl','rb'))
-ms = pickle.load(open('minmaxscaler.pkl','rb'))
+rfc = pickle.load(open('model.pkl', 'rb'))
+ms = pickle.load(open('minmaxscaler.pkl', 'rb'))
 
 crops_dict = {
     "rice": 1,
@@ -31,6 +31,9 @@ crops_dict = {
     "coffee": 22,
 }
 
+# Reverse mapping for easy lookup from prediction
+crop_dict2 = {v: k for k, v in crops_dict.items()}
+
 def recommend(N, P, k, temperature, humidity, ph, rainfall):
     features = np.array([[N, P, k, temperature, humidity, ph, rainfall]])
     transformed_features = ms.transform(features) 
@@ -56,19 +59,36 @@ def recommend_crop():
         ph = float(data.get('ph'))
         rainfall = float(data.get('rainfall'))
 
-        # Make prediction
         predicted_crop = recommend(N, P, K, temperature, humidity, ph, rainfall)
         
-        # Map prediction to crop name
-        crop_dict2 = {v: k for k, v in crops_dict.items()}
-        if predicted_crop in crop_dict2:
-            crop_name = crop_dict2[predicted_crop]
-        else:
-            crop_name = "Sorry, we are unable to recommend the crop now!"
+        crop_name = crop_dict2.get(predicted_crop, "Sorry, we are unable to recommend the crop now!")
     except Exception as e:
         crop_name = f"Error occurred: {str(e)}"
 
     return render_template('index.html', crop_name=crop_name)
+
+@app.route('/api/recommend', methods=['POST'])
+def api_recommend():
+    try:
+        data = request.get_json() 
+
+        N = data.get('N')
+        P = data.get('P')
+        k = data.get('k')
+        temperature = data.get('temperature')
+        humidity = data.get('humidity')
+        ph = data.get('ph')
+        rainfall = data.get('rainfall')
+
+        predicted_crop = recommend(N, P, k, temperature, humidity, ph, rainfall)
+        
+        crop_name = crop_dict2.get(predicted_crop, "Unknown Crop")
+        
+        return jsonify({'recommended_crop': crop_name})
+
+    except Exception as e:
+        return jsonify({'error': f"Error occurred: {str(e)}"}), 400
+
 
 if __name__ == "__main__":
     app.run(debug=True)
