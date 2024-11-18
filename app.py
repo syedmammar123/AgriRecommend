@@ -71,6 +71,7 @@ def recommend_crop():
 def api_recommend():
     try:
         data = request.get_json() 
+        print(data)
 
         N = data.get('N')
         P = data.get('P')
