@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommendation System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-container h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 30px;
+        }
+        .form-container label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .form-container input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-container input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .form-container input[type="button"] {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            margin: 20px 0;
+        }
+        .form-container input[type="button"]:hover {
+            background-color: #006F8C;
+        }
+        .result {
+            font-size: 1.5em;
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .note {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 20px;
+            color: #888;
+        }
+    </style>
+    <script>
+        // JavaScript function to autofill the form
+        function autofillForm() {
+            const data =         {"N": 90, "P": 50, "k": 70, "temperature": 26.0, "humidity": 80, "ph": 6.2, "rainfall": 180, "expected_output": "Maize"};
+            
+            
+            document.getElementsByName("N")[0].value = data.N;
+            document.getElementsByName("P")[0].value = data.P;
+            document.getElementsByName("K")[0].value = data.k;
+            document.getElementsByName("temperature")[0].value = data.temperature;
+            document.getElementsByName("humidity")[0].value = data.humidity;
+            document.getElementsByName("ph")[0].value = data.ph;
+            document.getElementsByName("rainfall")[0].value = data.rainfall;
+        }
+    </script>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Crop Recommendation System</h2>
+        <form action="/recommend" method="post">
+            <label for="N">Nitrogen (N):</label>
+            <input type="number" name="N" required>
+            
+            <label for="P">Phosphorus (P):</label>
+            <input type="number" name="P" required>
+            
+            <label for="K">Potassium (K):</label>
+            <input type="number" name="K" required>
+            
+            <label for="temperature">Temperature (°C):</label>
+            <input type="number" name="temperature" required>
+            
+            <label for="humidity">Humidity (%):</label>
+            <input type="number" name="humidity" required>
+            
+            <label for="ph">Soil pH:</label>
+            <input type="number" step="0.1" name="ph" required>
+            
+            <label for="rainfall">Rainfall (mm):</label>
+            <input type="number" name="rainfall" required>
+            
+            <input type="submit" value="Get Crop Recommendation">
+        </form>
+
+        <input type="button" value="Auto Fill" onclick="autofillForm()">
+        
+        {% if crop_name %}
+        <div class="result">Recommended Crop: {{ crop_name }}</div>
+        {% endif %}
+        
+        <div class="note">
+            <p>Note: The recommendation is based on available data for soil and weather conditions.</p>
+        </div>
+    </div>
+
+</body>
+</html>
